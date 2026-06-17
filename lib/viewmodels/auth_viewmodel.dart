@@ -14,11 +14,11 @@ class AuthViewModel extends ChangeNotifier {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
-  Future<bool> register(String mobileNumber, String password) async {
+  Future<bool> register(String emailOrMobile, String password) async {
     _setLoading(true);
     _clearError();
     try {
-      _currentUser = await _authRepository.register(mobileNumber, password);
+      _currentUser = await _authRepository.register(emailOrMobile, password);
       return true;
     } catch (e) {
       _setError(e.toString());
@@ -28,11 +28,11 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> login(String mobileNumber, String password) async {
+  Future<bool> login(String emailOrMobile, String password) async {
     _setLoading(true);
     _clearError();
     try {
-      _currentUser = await _authRepository.login(mobileNumber, password);
+      _currentUser = await _authRepository.login(emailOrMobile, password);
       return true;
     } catch (e) {
       _setError(e.toString());

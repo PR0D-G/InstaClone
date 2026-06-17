@@ -1,18 +1,18 @@
 class UserModel {
   final String id;
-  final String mobileNumber;
+  final String emailOrMobile;
   final String passwordHash;
 
   UserModel({
     required this.id,
-    required this.mobileNumber,
+    required this.emailOrMobile,
     required this.passwordHash,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'] as String,
-      mobileNumber: json['mobileNumber'] as String,
+      emailOrMobile: json['emailOrMobile'] as String,
       passwordHash: json['passwordHash'] as String,
     );
   }
@@ -20,7 +20,7 @@ class UserModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'mobileNumber': mobileNumber,
+      'emailOrMobile': emailOrMobile,
       'passwordHash': passwordHash,
     };
   }

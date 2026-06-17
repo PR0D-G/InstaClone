@@ -7,11 +7,7 @@
   },
   "auth": {
     "providers": {
-      "emailPassword": true,
-      "googleSignIn": {
-        "oAuthBrandDisplayName": "InstaClone",
-        "supportEmail": "support@undefined.firebaseapp.com"
-      }
+      "emailPassword": true
     }
   }
 }

@@ -3,16 +3,20 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'viewmodels/auth_viewmodel.dart';
 import 'views/auth/login_screen.dart';
-import 'views/home/home_screen.dart';
+import 'views/main/main_navigator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(const MyApp());
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    debugPrint('Firebase initialization error: $e');
+  }
+  runApp(const InstaClone());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class InstaClone extends StatelessWidget {
+  const InstaClone({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +26,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Instagram',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
           useMaterial3: true,
@@ -46,28 +51,39 @@ class _InitializerWidgetState extends State<InitializerWidget> {
   @override
   void initState() {
     super.initState();
-    _checkLogin();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkLogin();
+    });
   }
 
   Future<void> _checkLogin() async {
-    final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
-    final loggedIn = await authViewModel.checkLoginStatus();
-    setState(() {
-      _isLoggedIn = loggedIn;
-      _isLoading = false;
-    });
+    try {
+      final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+      final loggedIn = await authViewModel.checkLoginStatus();
+      if (mounted) {
+        setState(() {
+          _isLoggedIn = loggedIn;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Login check error: $e');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     if (_isLoggedIn) {
-      return const HomeScreen();
+      return const MainNavigator();
     } else {
       return const LoginScreen();
     }
