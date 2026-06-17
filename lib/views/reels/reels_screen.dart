@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../viewmodels/reels_viewmodel.dart';
+import 'widgets/reel_item_widget.dart';
 
 class ReelsScreen extends StatelessWidget {
   const ReelsScreen({super.key});
@@ -6,13 +9,21 @@ class ReelsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Reels'),
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
-      ),
-      body: const Center(
-        child: Text('Reels Screen (Coming soon)'),
+      backgroundColor: Colors.black,
+      body: Consumer<ReelsViewModel>(
+        builder: (context, viewModel, child) {
+          if (viewModel.reels.isEmpty) {
+            return const Center(child: CircularProgressIndicator(color: Colors.white));
+          }
+          
+          return PageView.builder(
+            scrollDirection: Axis.vertical,
+            itemCount: viewModel.reels.length,
+            itemBuilder: (context, index) {
+              return ReelItemWidget(reel: viewModel.reels[index]);
+            },
+          );
+        },
       ),
     );
   }

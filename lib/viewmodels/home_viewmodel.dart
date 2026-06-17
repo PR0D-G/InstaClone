@@ -14,17 +14,17 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   void _loadDummyData() {
-    // Generate 10 dummy stories
+
     _stories = List.generate(10, (index) {
       return StoryModel(
         id: 'story_$index',
         username: 'user_${index + 1}',
         avatarUrl: 'https://picsum.photos/seed/avatar_$index/150/150',
-        isViewed: index > 2, // First 3 are unviewed
+        isViewed: index > 2,
       );
     });
 
-    // Generate 10 dummy posts
+
     _posts = List.generate(10, (index) {
       return PostModel(
         id: 'post_$index',
