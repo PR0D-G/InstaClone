@@ -1,6 +1,6 @@
 class ReelModel {
   final String id;
-  final String videoUrl; // acts as videoPath
+  final String videoUrl;
   final int likes;
   final List<String> likedBy;
 

@@ -17,4 +17,3 @@
 - [x] Share button UI
 - [x] Error handling
 - [x] Loading states
-- [ ] README
