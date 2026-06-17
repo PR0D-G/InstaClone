@@ -3,9 +3,9 @@
 - [x] Models (empty files)
 - [x] Repositories (empty files)
 - [x] ViewModels (empty files)
-- [ ] Login/Register
-- [ ] Password hashing
-- [ ] Firestore user storage
+- [x] Login/Register
+- [x] Password hashing
+- [x] Firestore user storage
 - [ ] Home Screen (10 stories)
 - [ ] Home Screen (10 posts)
 - [ ] Reels collection in Firestore
