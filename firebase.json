@@ -1,13 +1,1 @@
-{
-  "firestore": {
-    "database": "(default)",
-    "location": "nam5",
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
-  },
-  "auth": {
-    "providers": {
-      "emailPassword": true
-    }
-  }
-}
+{"firestore":{"database":"(default)","location":"nam5","rules":"firestore.rules","indexes":"firestore.indexes.json"},"auth":{"providers":{"emailPassword":true}},"flutter":{"platforms":{"android":{"default":{"projectId":"insta-clone-68dbd","appId":"1:368001840237:android:7e61b2988b12f8b3f8bb64","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"insta-clone-68dbd","configurations":{"android":"1:368001840237:android:7e61b2988b12f8b3f8bb64","ios":"1:368001840237:ios:ae871d31653c4627f8bb64","web":"1:368001840237:web:0d7e215479573066f8bb64"}}}}}}

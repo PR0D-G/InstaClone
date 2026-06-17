@@ -4,6 +4,7 @@ class PostModel {
   final String userAvatarUrl;
   final String imageUrl;
   final int likes;
+  final List<String> likedBy;
   final String caption;
   final int commentCount;
   final String timestamp;
@@ -14,6 +15,7 @@ class PostModel {
     required this.userAvatarUrl,
     required this.imageUrl,
     required this.likes,
+    required this.likedBy,
     required this.caption,
     required this.commentCount,
     required this.timestamp,

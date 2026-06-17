@@ -12,12 +12,14 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  final _usernameController = TextEditingController();
   final _emailOrMobileController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
   void _register() async {
-    if (_emailOrMobileController.text.isEmpty ||
+    if (_usernameController.text.isEmpty ||
+        _emailOrMobileController.text.isEmpty ||
         _passwordController.text.isEmpty ||
         _confirmPasswordController.text.isEmpty) {
       ScaffoldMessenger.of(
@@ -35,6 +37,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
     final success = await authViewModel.register(
+      _usernameController.text.trim(),
       _emailOrMobileController.text.trim(),
       _passwordController.text,
     );
@@ -70,6 +73,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     fontFamily: 'Segoe UI',
                     fontSize: 48,
                     fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                TextField(
+                  controller: _usernameController,
+                  decoration: InputDecoration(
+                    hintText: 'Username',
+                    filled: true,
+                    fillColor: Colors.grey[50],
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(4),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(4),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(4),
+                      borderSide: const BorderSide(color: Colors.grey),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -223,6 +252,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void dispose() {
+    _usernameController.dispose();
     _emailOrMobileController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();

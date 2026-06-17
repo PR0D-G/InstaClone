@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../viewmodels/home_viewmodel.dart';
+import '../../viewmodels/auth_viewmodel.dart';
+import '../auth/login_screen.dart';
 import 'widgets/story_widget.dart';
 import 'widgets/post_widget.dart';
 
@@ -23,6 +25,21 @@ class HomeScreen extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.black),
+            onPressed: () async {
+              await Provider.of<AuthViewModel>(context, listen: false).logout();
+              if (context.mounted) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  (route) => false,
+                );
+              }
+            },
+          ),
+        ],
       ),
       body: Consumer<HomeViewModel>(
         builder: (context, viewModel, child) {

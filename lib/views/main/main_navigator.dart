@@ -12,10 +12,9 @@ class MainNavigator extends StatefulWidget {
 class _MainNavigatorState extends State<MainNavigator> {
   int _selectedIndex = 0;
 
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const ReelsScreen(),
-  ];
+  List<Widget> _buildScreens() {
+    return [const HomeScreen(), ReelsScreen(isActiveTab: _selectedIndex == 1)];
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -26,10 +25,7 @@ class _MainNavigatorState extends State<MainNavigator> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _screens,
-      ),
+      body: IndexedStack(index: _selectedIndex, children: _buildScreens()),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,

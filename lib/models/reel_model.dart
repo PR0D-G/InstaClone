@@ -1,25 +1,22 @@
 class ReelModel {
-  final String title;
-  final String subtitle;
-  final String description;
-  final String thumbUrl;
-  final String videoUrl;
+  final String id;
+  final String videoUrl; // acts as videoPath
+  final int likes;
+  final List<String> likedBy;
 
   ReelModel({
-    required this.title,
-    required this.subtitle,
-    required this.description,
-    required this.thumbUrl,
+    required this.id,
     required this.videoUrl,
+    required this.likes,
+    required this.likedBy,
   });
 
   factory ReelModel.fromJson(Map<String, dynamic> json) {
     return ReelModel(
-      title: json['title'] as String? ?? '',
-      subtitle: json['subtitle'] as String? ?? '',
-      description: json['description'] as String? ?? '',
-      thumbUrl: json['thumb'] as String? ?? '',
-      videoUrl: (json['sources'] as List<dynamic>?)?.first as String? ?? '',
+      id: json['id'] as String,
+      videoUrl: json['videoUrl'] as String? ?? '',
+      likes: json['likes'] as int? ?? 0,
+      likedBy: List<String>.from(json['likedBy'] ?? []),
     );
   }
 }

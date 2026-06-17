@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import '../../../viewmodels/reels_viewmodel.dart';
+import '../../../repositories/social_repository.dart';
+import '../../../viewmodels/auth_viewmodel.dart';
 
 class CommentDialog extends StatefulWidget {
-  final String videoUrl;
+  final String collection;
+  final String docId;
 
-  const CommentDialog({super.key, required this.videoUrl});
+  const CommentDialog({super.key, required this.collection, required this.docId});
 
   @override
   State<CommentDialog> createState() => _CommentDialogState();
@@ -13,6 +16,7 @@ class CommentDialog extends StatefulWidget {
 
 class _CommentDialogState extends State<CommentDialog> {
   final _commentController = TextEditingController();
+  final SocialRepository _socialRepo = SocialRepository();
 
   @override
   void dispose() {
@@ -35,19 +39,24 @@ class _CommentDialogState extends State<CommentDialog> {
             ),
             const Divider(),
             Expanded(
-              child: Consumer<ReelsViewModel>(
-                builder: (context, viewModel, child) {
-                  final comments = viewModel.getComments(widget.videoUrl);
-                  if (comments.isEmpty) {
+              child: StreamBuilder<QuerySnapshot>(
+                stream: _socialRepo.getCommentsStream(widget.collection, widget.docId),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                     return const Center(child: Text('No comments yet.'));
                   }
+                  final docs = snapshot.data!.docs;
                   return ListView.builder(
-                    itemCount: comments.length,
+                    itemCount: docs.length,
                     itemBuilder: (context, index) {
+                      final data = docs[index].data() as Map<String, dynamic>;
                       return ListTile(
                         leading: const CircleAvatar(child: Icon(Icons.person)),
-                        title: Text('user_${index + 1}', style: const TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: Text(comments[index]),
+                        title: Text(data['userId'] ?? 'user', style: const TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: Text(data['text'] ?? ''),
                       );
                     },
                   );
@@ -67,10 +76,15 @@ class _CommentDialogState extends State<CommentDialog> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.send, color: Colors.blue),
-                  onPressed: () {
+                  onPressed: () async {
                     if (_commentController.text.isNotEmpty) {
-                      Provider.of<ReelsViewModel>(context, listen: false)
-                          .addComment(widget.videoUrl, _commentController.text);
+                      final currentUserId = Provider.of<AuthViewModel>(context, listen: false).currentUser?.id ?? 'guest';
+                      await _socialRepo.addComment(
+                        collection: widget.collection,
+                        docId: widget.docId,
+                        text: _commentController.text,
+                        currentUserId: currentUserId,
+                      );
                       _commentController.clear();
                     }
                   },

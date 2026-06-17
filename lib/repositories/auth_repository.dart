@@ -24,7 +24,7 @@ class AuthRepository {
     await prefs.setString('users_db', usersJson);
   }
 
-  Future<UserModel> register(String emailOrMobile, String password) async {
+  Future<UserModel> register(String username, String emailOrMobile, String password) async {
     final users = await _getUsers();
     
     final exists = users.any((u) => u.emailOrMobile == emailOrMobile);
@@ -35,6 +35,7 @@ class AuthRepository {
     final hashedPassword = _hashPassword(password);
     final user = UserModel(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
+      username: username,
       emailOrMobile: emailOrMobile,
       passwordHash: hashedPassword,
     );

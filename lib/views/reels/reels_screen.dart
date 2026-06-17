@@ -4,7 +4,9 @@ import '../../viewmodels/reels_viewmodel.dart';
 import 'widgets/reel_item_widget.dart';
 
 class ReelsScreen extends StatefulWidget {
-  const ReelsScreen({super.key});
+  final bool isActiveTab;
+  
+  const ReelsScreen({super.key, this.isActiveTab = true});
 
   @override
   State<ReelsScreen> createState() => _ReelsScreenState();
@@ -34,7 +36,7 @@ class _ReelsScreenState extends State<ReelsScreen> {
             itemBuilder: (context, index) {
               return ReelItemWidget(
                 reel: viewModel.reels[index],
-                isFocused: _currentPage == index,
+                isFocused: _currentPage == index && widget.isActiveTab,
               );
             },
           );

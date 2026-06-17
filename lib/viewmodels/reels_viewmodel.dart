@@ -1,12 +1,10 @@
-import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../models/reel_model.dart';
+import '../repositories/social_repository.dart';
 
 class ReelsViewModel extends ChangeNotifier {
   List<ReelModel> _reels = [];
-  Map<String, int> _likes = {};
-  Map<String, List<String>> _comments = {};
+  final SocialRepository _socialRepo = SocialRepository();
 
   List<ReelModel> get reels => _reels;
 
@@ -14,62 +12,43 @@ class ReelsViewModel extends ChangeNotifier {
     _loadData();
   }
 
-  Future<void> _loadData() async {
-    final prefs = await SharedPreferences.getInstance();
-    
-
-    final likesStr = prefs.getString('reels_likes');
-    if (likesStr != null) {
-      _likes = Map<String, int>.from(json.decode(likesStr));
-    }
-
-
-    final commentsStr = prefs.getString('reels_comments');
-    if (commentsStr != null) {
-      final decoded = json.decode(commentsStr) as Map<String, dynamic>;
-      _comments = decoded.map((key, value) => MapEntry(key, List<String>.from(value)));
-    }
-
-
-    // Use local video assets
+  void _loadData() {
+    // Use local video assets mapped to firestore IDs
     _reels = List.generate(5, (index) {
       final vIndex = index + 1;
       return ReelModel(
-        title: 'Local Reel $vIndex',
-        subtitle: 'By InstaClone',
-        description: 'Enjoying this cool local video from the assets folder! #video #local',
-        thumbUrl: 'assets/imgs/image-$vIndex.jpg',
+        id: 'reel_$vIndex',
         videoUrl: 'assets/video/video_$vIndex.mp4',
+        likes: 0,
+        likedBy: [],
       );
     });
     
     notifyListeners();
   }
 
-  int getLikes(String videoUrl) {
-    return _likes[videoUrl] ?? 0;
+  Future<void> toggleLike(String reelId, String currentUserId) async {
+    await _socialRepo.toggleLike(
+      collection: 'reels',
+      docId: reelId,
+      currentUserId: currentUserId,
+    );
   }
 
-  void toggleLike(String videoUrl) async {
-    final currentLikes = getLikes(videoUrl);
-    _likes[videoUrl] = currentLikes + 1;
-    notifyListeners();
-    
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('reels_likes', json.encode(_likes));
+  Future<void> addComment(String reelId, String text, String currentUserId) async {
+    await _socialRepo.addComment(
+      collection: 'reels',
+      docId: reelId,
+      text: text,
+      currentUserId: currentUserId,
+    );
   }
 
-  List<String> getComments(String videoUrl) {
-    return _comments[videoUrl] ?? [];
+  Stream getMetadataStream(String reelId) {
+    return _socialRepo.getMetadataStream('reels', reelId);
   }
 
-  void addComment(String videoUrl, String comment) async {
-    final current = getComments(videoUrl);
-    current.add(comment);
-    _comments[videoUrl] = current;
-    notifyListeners();
-
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('reels_comments', json.encode(_comments));
+  Stream getCommentsStream(String reelId) {
+    return _socialRepo.getCommentsStream('reels', reelId);
   }
 }

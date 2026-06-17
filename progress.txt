@@ -1,20 +1,20 @@
-- [ ] Firebase setup
+- [x] Firebase setup
 - [x] MVVM folder structure
-- [x] Models (empty files)
-- [x] Repositories (empty files)
-- [x] ViewModels (empty files)
+- [x] Models
+- [x] Repositories
+- [x] ViewModels
 - [x] Login/Register
 - [x] Password hashing
 - [x] Firestore user storage
-- [ ] Home Screen (10 stories)
-- [ ] Home Screen (10 posts)
-- [ ] Reels collection in Firestore
-- [ ] Load 5 videos
-- [ ] Like functionality
-- [ ] Persist likes
-- [ ] Comment functionality
-- [ ] Persist comments
-- [ ] Share button UI
-- [ ] Error handling
-- [ ] Loading states
+- [x] Home Screen (10 stories)
+- [x] Home Screen (10 posts)
+- [x] Reels collection in Firestore
+- [x] Load 5 videos
+- [x] Like functionality
+- [x] Persist likes
+- [x] Comment functionality
+- [x] Persist comments
+- [x] Share button UI
+- [x] Error handling
+- [x] Loading states
 - [ ] README

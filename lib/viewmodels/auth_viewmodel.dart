@@ -14,17 +14,20 @@ class AuthViewModel extends ChangeNotifier {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
-  Future<bool> register(String emailOrMobile, String password) async {
-    _setLoading(true);
-    _clearError();
+  Future<bool> register(String username, String emailOrMobile, String password) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
     try {
-      _currentUser = await _authRepository.register(emailOrMobile, password);
+      _currentUser = await _authRepository.register(username, emailOrMobile, password);
       return true;
     } catch (e) {
-      _setError(e.toString());
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
       return false;
     } finally {
-      _setLoading(false);
+      _isLoading = false;
+      notifyListeners();
     }
   }
 
