@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../models/story_model.dart';
+import '../story_view_screen.dart';
 
 class StoryWidget extends StatelessWidget {
   final StoryModel story;
@@ -8,9 +9,18 @@ class StoryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 12.0),
-      child: Column(
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StoryViewScreen(story: story),
+          ),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(left: 12.0),
+        child: Column(
         children: [
           Container(
             padding: const EdgeInsets.all(3),
@@ -22,9 +32,8 @@ class StoryWidget extends StatelessWidget {
                     )
                   : const LinearGradient(
                       colors: [
-                        Color(0xFFFBAA47),
-                        Color(0xFFD91A46),
-                        Color(0xFFA60F93),
+                        Colors.blue,
+                        Colors.lightBlueAccent,
                       ],
                       begin: Alignment.topRight,
                       end: Alignment.bottomLeft,
@@ -38,7 +47,7 @@ class StoryWidget extends StatelessWidget {
               ),
               child: CircleAvatar(
                 radius: 32,
-                backgroundImage: NetworkImage(story.avatarUrl),
+                backgroundImage: AssetImage(story.avatarUrl),
                 backgroundColor: Colors.grey[200],
               ),
             ),
@@ -47,6 +56,58 @@ class StoryWidget extends StatelessWidget {
           Text(
             story.username,
             style: const TextStyle(fontSize: 12, color: Colors.black87),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    ),
+    );
+  }
+}
+
+class YourStoryWidget extends StatelessWidget {
+  const YourStoryWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 12.0),
+      child: Column(
+        children: [
+          Stack(
+            children: [
+              Container(
+                margin: const EdgeInsets.all(3),
+                child: CircleAvatar(
+                  radius: 32,
+                  backgroundImage: const AssetImage('assets/imgs/image-10.jpg'),
+                  backgroundColor: Colors.grey[200],
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.blue,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.add, color: Colors.white, size: 18),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Your Story',
+            style: TextStyle(fontSize: 12, color: Colors.grey),
             overflow: TextOverflow.ellipsis,
           ),
         ],

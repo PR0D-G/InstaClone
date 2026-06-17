@@ -18,7 +18,7 @@ class PostWidget extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 16,
-                backgroundImage: NetworkImage(post.userAvatarUrl),
+                backgroundImage: AssetImage(post.userAvatarUrl),
                 backgroundColor: Colors.grey[200],
               ),
               const SizedBox(width: 8),
@@ -37,7 +37,7 @@ class PostWidget extends StatelessWidget {
           aspectRatio: 1,
           child: Container(
             color: Colors.grey[200],
-            child: Image.network(
+            child: Image.asset(
               post.imageUrl,
               fit: BoxFit.cover,
             ),

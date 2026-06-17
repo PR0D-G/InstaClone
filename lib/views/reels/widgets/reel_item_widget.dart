@@ -7,41 +7,76 @@ import 'comment_dialog.dart';
 
 class ReelItemWidget extends StatefulWidget {
   final ReelModel reel;
+  final bool isFocused;
 
-  const ReelItemWidget({super.key, required this.reel});
+  const ReelItemWidget({super.key, required this.reel, required this.isFocused});
 
   @override
   State<ReelItemWidget> createState() => _ReelItemWidgetState();
 }
 
 class _ReelItemWidgetState extends State<ReelItemWidget> {
-  late VideoPlayerController _controller;
+  VideoPlayerController? _controller;
   bool _isPlaying = true;
+  bool _hasError = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.networkUrl(Uri.parse(widget.reel.videoUrl))
+    if (widget.isFocused) {
+      _initVideo();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant ReelItemWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isFocused && !oldWidget.isFocused) {
+      if (_controller == null) {
+        _initVideo();
+      } else {
+        _controller?.play();
+        _isPlaying = true;
+      }
+    } else if (!widget.isFocused && oldWidget.isFocused) {
+      _controller?.pause();
+      _isPlaying = false;
+    }
+  }
+
+  void _initVideo() {
+    _controller = VideoPlayerController.asset(widget.reel.videoUrl)
       ..initialize().then((_) {
-        setState(() {});
-        _controller.setLooping(true);
-        _controller.play();
+        if (mounted) {
+          setState(() {});
+          _controller?.setLooping(true);
+          if (widget.isFocused) {
+            _controller?.play();
+          }
+        }
+      }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            _hasError = true;
+          });
+        }
       });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
   void _togglePlay() {
+    if (_controller == null) return;
     setState(() {
-      if (_controller.value.isPlaying) {
-        _controller.pause();
+      if (_controller!.value.isPlaying) {
+        _controller!.pause();
         _isPlaying = false;
       } else {
-        _controller.play();
+        _controller!.play();
         _isPlaying = true;
       }
     });
@@ -62,15 +97,17 @@ class _ReelItemWidgetState extends State<ReelItemWidget> {
 
         GestureDetector(
           onTap: _togglePlay,
-          child: _controller.value.isInitialized
-              ? AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  child: VideoPlayer(_controller),
-                )
-              : Container(
-                  color: Colors.black,
-                  child: const Center(child: CircularProgressIndicator(color: Colors.white)),
-                ),
+          child: _hasError
+              ? const Center(child: Icon(Icons.error, color: Colors.red, size: 50))
+              : (_controller?.value.isInitialized ?? false)
+                  ? AspectRatio(
+                      aspectRatio: _controller!.value.aspectRatio,
+                      child: VideoPlayer(_controller!),
+                    )
+                  : Container(
+                      color: Colors.black,
+                      child: const Center(child: CircularProgressIndicator(color: Colors.white)),
+                    ),
         ),
 
 
@@ -155,9 +192,13 @@ class _ReelItemWidgetState extends State<ReelItemWidget> {
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.white, width: 2),
                       borderRadius: BorderRadius.circular(8),
-                      image: DecorationImage(
-                        image: NetworkImage(widget.reel.thumbUrl),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                      child: Image.asset(
+                        widget.reel.thumbUrl,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, color: Colors.white, size: 16),
                       ),
                     ),
                   ),

@@ -3,8 +3,15 @@ import 'package:provider/provider.dart';
 import '../../viewmodels/reels_viewmodel.dart';
 import 'widgets/reel_item_widget.dart';
 
-class ReelsScreen extends StatelessWidget {
+class ReelsScreen extends StatefulWidget {
   const ReelsScreen({super.key});
+
+  @override
+  State<ReelsScreen> createState() => _ReelsScreenState();
+}
+
+class _ReelsScreenState extends State<ReelsScreen> {
+  int _currentPage = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +26,16 @@ class ReelsScreen extends StatelessWidget {
           return PageView.builder(
             scrollDirection: Axis.vertical,
             itemCount: viewModel.reels.length,
+            onPageChanged: (index) {
+              setState(() {
+                _currentPage = index;
+              });
+            },
             itemBuilder: (context, index) {
-              return ReelItemWidget(reel: viewModel.reels[index]);
+              return ReelItemWidget(
+                reel: viewModel.reels[index],
+                isFocused: _currentPage == index,
+              );
             },
           );
         },

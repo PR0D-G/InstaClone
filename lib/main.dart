@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'viewmodels/auth_viewmodel.dart';
 import 'viewmodels/reels_viewmodel.dart';
+import 'viewmodels/home_viewmodel.dart';
 import 'views/auth/login_screen.dart';
 import 'views/main/main_navigator.dart';
 
@@ -25,6 +26,7 @@ class InstaClone extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
         ChangeNotifierProvider(create: (_) => ReelsViewModel()),
+        ChangeNotifierProvider(create: (_) => HomeViewModel()),
       ],
       child: MaterialApp(
         title: 'Instagram',
